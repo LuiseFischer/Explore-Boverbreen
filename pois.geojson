@@ -1,0 +1,14 @@
+{
+  "type" : "FeatureCollection",
+  "features" : [{"type":"Feature","id":1,"geometry":{"type":"Point","coordinates":[8.0380370370000378,61.564083593000078]},"properties":{"OBJECTID":1,"Topic":"1-Lichenometrie","zoom": 12, "pitch": 0, "bearing": 100}},
+
+{"type":"Feature","id":2,"geometry":{"type":"Point","coordinates":[8.0271594470000309,61.561264398000048]},"properties":{"OBJECTID":2,"Topic":"2-histFoto", "zoom": 15, "pitch": 85, "bearing": 110}},
+
+{"type":"Feature","id":3,"geometry":{"type":"Point","coordinates":[8.0396185180000543,61.555960133000042]},"properties":{"OBJECTID":3,"Topic":"3-Gletscher","zoom": 13, "pitch": 70, "bearing": 70}},
+
+{"type":"Feature","id":4,"geometry":{"type":"Point","coordinates":[8.0466122990000695,61.556917647000028]},"properties":{"OBJECTID":5,"Topic":"4-GLIMS","zoom": 15, "pitch": 10, "bearing": 60}},
+
+{"type":"Feature","id":5,"geometry":{"type":"Point","coordinates":[8.0526192630000537,61.556130457000052]},"properties":{"OBJECTID":6,"Topic":"5-Drohnen","zoom": 15, "pitch": 60, "bearing": 40}},
+
+{"type":"Feature","id":6,"geometry":{"type":"Point","coordinates":[8.0552575030000639,61.554857543000082]},"properties":{"OBJECTID":7,"Topic":"6-Gletscherforschung","zoom": 15, "pitch": 20, "bearing": 320}}]
+}
