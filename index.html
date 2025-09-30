@@ -187,10 +187,10 @@ const map = new maplibregl.Map({
 const modelRotate = [Math.PI / 2, 0, 0];
 const modelorigin = [8.05415, 61.55583];
 const modelConfigs = {
-    "model25.ply": { origin: [8.05415, 61.55583], altitude: 1517.80 },
-    "model24.ply": { origin: [8.05415, 61.55583], altitude: 1517.61 },
-    "model23.ply": { origin: [8.05415, 61.55583], altitude: 1518.23 },
-    "model22.ply": { origin: [8.05415, 61.55583], altitude: 1519.11 }  
+    "model25.ply": { id: '1OULIOsy0BKghqXLCy1wybtcghuqFFzXr',origin: [8.05415, 61.55583], altitude: 1517.80 },
+    "model24.ply": { id: '1OULIOsy0BKghqXLCy1wybtcghuqFFzXr',origin: [8.05415, 61.55583], altitude: 1517.61 },
+    "model23.ply": { id: '1OULIOsy0BKghqXLCy1wybtcghuqFFzXr',origin: [8.05415, 61.55583], altitude: 1518.23 },
+    "model22.ply": { id: '1OULIOsy0BKghqXLCy1wybtcghuqFFzXr',origin: [8.05415, 61.55583], altitude: 1519.11 }  
 };
 
 const loadedModels = {};
@@ -212,57 +212,48 @@ function computeModelTransform(name) {
 }
 
 function preloadModelsSequential(scene, onProgress, onComplete) {
-    const modelFiles = Object.keys(modelConfigs);
+    const modelKeys = Object.keys(modelConfigs);
     let index = 0;
 
     function loadNext() {
-        if (index >= modelFiles.length) {
+        if (index >= modelKeys.length) {
             onComplete();
             return;
         }
-        const filename = modelFiles[index];
-        const transform = computeModelTransform(filename);
 
-        plyLoader.load(`models/${filename}`, (plyGeometry) => {
+        const key = modelKeys[index];
+        const cfg = modelConfigs[key];
+
+        // Google Drive Direktlink
+        const url = `https://drive.google.com/uc?export=download&id=${cfg.id}`;
+
+        plyLoader.load(url, (plyGeometry) => {
             plyGeometry.computeVertexNormals();
             const plyMaterial = new THREE.MeshStandardMaterial({
-                //vertexColors: true,
-                color: 0xe0e0e0, //0xd8a1ff,
+                color: 0xe0e0e0,
                 metalness: 0.3,
                 roughness: 0.5
             });
             const plyMesh = new THREE.Mesh(plyGeometry, plyMaterial);
             plyMesh.rotateX(-Math.PI / 2);
 
-            const box = new THREE.Box3().setFromObject(plyMesh);
-            const center = new THREE.Vector3();
-            box.getCenter(center);
-            plyMesh.position.sub(center);
-
-            const rotationX = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0), transform.rotateX);
-            const rotationY = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 1, 0), transform.rotateY);
-            const rotationZ = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1), transform.rotateZ);
-
-            const translation = new THREE.Matrix4()
-                .makeTranslation(transform.translateX, transform.translateY, transform.translateZ)
-                .scale(new THREE.Vector3(transform.scale, -transform.scale, transform.scale))
-                .multiply(rotationX)
-                .multiply(rotationY)
-                .multiply(rotationZ);
-
-            plyMesh.userData.transform = translation;
+            const transform = computeModelTransform(key); // falls nötig
+            // Transform anwenden
+            plyMesh.userData.transform = transform;
             plyMesh.visible = false;
 
             scene.add(plyMesh);
-            loadedModels[filename] = plyMesh;
+            loadedModels[key] = plyMesh;
 
             index++;
-            onProgress(index, modelFiles.length);
+            onProgress(index, modelKeys.length);
             requestIdleCallback(loadNext);
         });
     }
+
     loadNext();
 }
+
 
 function showModel(name) {
     if (currentModelMesh) currentModelMesh.visible = false;
@@ -859,6 +850,7 @@ heightSelector.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
