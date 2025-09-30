@@ -224,21 +224,16 @@ function preloadModelsSequential(scene, onProgress, onComplete) {
         const key = modelKeys[index];
         const cfg = modelConfigs[key];
 
-        // Google Drive Direktlink
+        // URL für Google Drive
         const url = `https://drive.google.com/uc?export=download&id=${cfg.id}`;
 
         plyLoader.load(url, (plyGeometry) => {
             plyGeometry.computeVertexNormals();
-            const plyMaterial = new THREE.MeshStandardMaterial({
-                color: 0xe0e0e0,
-                metalness: 0.3,
-                roughness: 0.5
-            });
+            const plyMaterial = new THREE.MeshStandardMaterial({ color: 0xe0e0e0, metalness: 0.3, roughness: 0.5 });
             const plyMesh = new THREE.Mesh(plyGeometry, plyMaterial);
             plyMesh.rotateX(-Math.PI / 2);
 
-            const transform = computeModelTransform(key); // falls nötig
-            // Transform anwenden
+            const transform = computeModelTransform(key);
             plyMesh.userData.transform = transform;
             plyMesh.visible = false;
 
@@ -850,6 +845,7 @@ heightSelector.addEventListener('change', (e) => {
 </script>
 </body>
 </html>
+
 
 
 
