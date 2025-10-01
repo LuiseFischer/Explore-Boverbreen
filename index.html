@@ -7,10 +7,12 @@
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css' />
     <script src='https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf/turf.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <base href="https://luisefischer.github.io/Explore-Boverbreen/">
+    <link rel="stylesheet" href="style2.css">
+    <base href="https://username.github.io/meinprojekt/">
 </head>
+
 <body>
+<!-- Import Three JS -->
 <script type="importmap">
 {
     "imports": {
@@ -20,25 +22,25 @@
 }
 </script>
 
+<!-- HTML elements -->
 <div id="map"></div>
-<!-- <div id="colorOverlay"></div> -->
 
 <div id="sidebar">
-  <!-- Tab-Navigation -->
+  <!-- Tab Modes -->
   <div class="tabs">
     <button class="tab-button active" data-tab="explore">Explore</button>
     <button class="tab-button" data-tab="tour">Tour</button>
   </div>
 
-  <!-- Inhalt: Explore -->
+  <!-- Explore-Mode -->
   <div class="tab-content active" id="tab-explore">
-    <!-- Untermenüs Explore -->
+    <!-- 2D and 3D Contents -->
     <div class="subtabs">
       <button class="subtab-button active" data-subtab="layers">2D</button>
       <button class="subtab-button" data-subtab="models">3D</button>
     </div>
 
-    <!-- Explore: Layer -->
+    <!-- Explore: 2D -->
     <div class="subtab-content active" id="subtab-layers">
       <h3>Orthophotos</h3>
       <div class="ortho-buttons">
@@ -68,22 +70,22 @@
       <button class="soon-button">Measure change</button>
     </div>
 
-     <!-- Explore: Modelle -->
+     <!-- Explore: 3D -->
     <div class="subtab-content" id="subtab-models">
       <h3>3D models</h3>
       <label><input type="checkbox" id="toggleModels">show models</label>
       <select id="modelSelector">
-          <option value="model25.ply" selected>Modell 2025</option>
+          <option value="model25.ply">Modell 2025</option>
           <option value="model24.ply">Modell 2024</option>
           <option value="model23.ply">Modell 2023</option>
-          <option value="model22.ply">Modell 2022</option>
+          <option value="model22.ply" selected>Modell 2022</option>
       </select>
     </div>
   </div>
 
-    <!-- Inhalt: Tour -->
+    <!-- Tour-Mode -->
   <div class="tab-content" id="tab-tour">
-    <!-- Untermenüs Tour -->
+    <!-- POIs -->
     <div class="subtabs">
       <button class="subtab-button active" data-subtab="poi1">1</button>
       <button class="subtab-button" data-subtab="poi2">2</button>
@@ -93,7 +95,7 @@
       <button class="subtab-button" data-subtab="poi6">6</button>
     </div>
 
-    <!-- Inhalte für jede POI-Subtab -->
+    <!-- POI Contents -->
     <div class="subtab-content active" id="subtab-poi1">
       <h3>1-Lichenometry</h3>
       <p>There was still ice here in 1750... </p>
@@ -128,18 +130,26 @@
     <button class="soon-button">Data</button>
 </div>
 
-
 <img id="heightLegend" src="heightmaps/legend.png" alt="Height Legend">
 
-<div id="loadingSplash" style="display:none; position:absolute; inset:0; background:rgba(255, 255, 255, 0.4); color:rgb(0, 0, 0); font-family: 'Courier New', Courier, monospace; justify-content:center; align-items:center; flex-direction:column; z-index:1000;">
+<div id="loadingSplash" style="
+    display:none; 
+    position:absolute; 
+    inset:0; 
+    background:rgba(255, 255, 255, 0.4); 
+    font-family: 'Courier New', Courier, monospace; 
+    justify-content:center; 
+    align-items:center; 
+    flex-direction:column; 
+    z-index:1000;">
     <div>Lade Modelle...</div>
     <div style="width:300px; height:16px; background:#ffffff; border-radius:8px; margin-top:8px;">
         <div id="progressBar" style="width:0%; height:100%; background:rgb(169, 30, 230); border-radius:8px;"></div>
     </div>
 </div>
 
-<div id="loadingSpinner">Lade Modelle...</div>
 
+<!-- Tooltips -->
 <div id="tooltip" style="
   display:none;
   position:absolute;
@@ -166,33 +176,35 @@
     z-index:1000;
 "></div>
 
-<script type="module">
+
+<!-- Script -->
+<script  type="module">
 import * as THREE from 'three';
 import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
 
-const center = [8.05366314557974, 61.55606598139221];
 const map = new maplibregl.Map({
     container: 'map',
     style: 'https://api.maptiler.com/maps/satellite/style.json?key=eIzhbDn6LNqL7hhzJdkU', //01999470-6312-7d71-bbb7-168732bad29b
     zoom: 13,
     minZoom: 11,
     maxZoom: 17,
-    center: center,
+    center: [8.05366314557974, 61.55606598139221], //lon,lat
     pitch: 60,
     bearing: 100,
     canvasContextAttributes: { antialias: true, preserveDrawingBuffer: true }
 });
 
-
+// load models - configs
 const modelRotate = [Math.PI / 2, 0, 0];
 const modelorigin = [8.05415, 61.55583];
 const modelConfigs = {
-    "model25.ply": { origin: [8.05415, 61.55583], altitude: 1517.80 },
-    "model24.ply": { origin: [8.05415, 61.55583], altitude: 1517.61 },
-    "model23.ply": { origin: [8.05415, 61.55583], altitude: 1518.23 },
-    "model22.ply": { origin: [8.05415, 61.55583], altitude: 1519.11 }  
+    "model25.ply": { altitude: 1517.80 },
+    "model24.ply": { altitude: 1517.61 },
+    "model23.ply": { altitude: 1518.23 },
+    "model22.ply": { altitude: 1519.11 }  
 };
 
+// load models - functions
 const loadedModels = {};
 let currentModelMesh = null;
 const plyLoader = new PLYLoader();
@@ -226,9 +238,9 @@ function preloadModelsSequential(scene, onProgress, onComplete) {
         plyLoader.load(`models/${filename}`, (plyGeometry) => {
             plyGeometry.computeVertexNormals();
             const plyMaterial = new THREE.MeshStandardMaterial({
-                //vertexColors: true,
-                color: 0xe0e0e0, //0xd8a1ff,
-                metalness: 0.3,
+                //vertexColors: true,   //enable for RGB colors
+                color: 0xe0e0e0,        //disable for RGB colors
+                metalness: 0.2,
                 roughness: 0.5
             });
             const plyMesh = new THREE.Mesh(plyGeometry, plyMaterial);
@@ -264,7 +276,6 @@ function preloadModelsSequential(scene, onProgress, onComplete) {
     loadNext();
 }
 
-
 function showModel(name) {
     if (currentModelMesh) currentModelMesh.visible = false;
     if (loadedModels[name]) {
@@ -273,79 +284,79 @@ function showModel(name) {
     }
 }
 
+// three.js scene
 const customLayer = {
     id: '3d-ply-model',
     type: 'custom',
     renderingMode: '3d',
-onAdd: function (map, gl) {
-    this.camera = new THREE.Camera();
-    this.scene = new THREE.Scene();
+    onAdd: function (map, gl) {
+        this.camera = new THREE.Camera();
+        this.scene = new THREE.Scene();
 
-    const light1 = new THREE.DirectionalLight(0xffffff, 1.5);
-    light1.position.set(-70, 80, -30);
-    this.scene.add(light1);
+        const light1 = new THREE.DirectionalLight(0xffffff, 1);
+        light1.position.set(-60, 60, 30);
+        this.scene.add(light1);
 
-    const light2 = new THREE.DirectionalLight(0xffffff, 2);
-    light2.position.set(0, 20, 0);
-    this.scene.add(light2);
+        const light2 = new THREE.DirectionalLight(0xffffff, 1.5);
+        light2.position.set(0, 20, 0);
+        this.scene.add(light2);
 
-    this.map = map;
-    this.renderer = new THREE.WebGLRenderer({
-        canvas: map.getCanvas(),
-        context: gl,
-        antialias: true,
-        alpha: true
-    });
-    this.renderer.autoClear = false;
+        this.map = map;
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: map.getCanvas(),
+            context: gl,
+            antialias: true,
+            alpha: true
+        });
+        this.renderer.autoClear = false;
 
-const toggleModels = document.getElementById('toggleModels');
-const modelSelector = document.getElementById('modelSelector');
-const loadingSplash = document.getElementById('loadingSplash');
-const progressBar = document.getElementById('progressBar');
+        const toggleModels = document.getElementById('toggleModels');
+        const modelSelector = document.getElementById('modelSelector');
+        const loadingSplash = document.getElementById('loadingSplash');
+        const progressBar = document.getElementById('progressBar');
 
-modelSelector.disabled = true;
-let modelsLoaded = false;
-
-toggleModels.addEventListener('change', () => {
-    if (toggleModels.checked) {
-        if (!modelsLoaded) {
-            loadingSplash.style.display = 'flex';
-            preloadModelsSequential(this.scene,
-                (loaded, total) => {
-                    const percent = Math.round((loaded / total) * 100);
-                    progressBar.style.width = percent + '%';
-                },
-                () => {
-                    loadingSplash.style.display = 'none';
-                    modelSelector.disabled = false;
-                    showModel(modelSelector.value); // erstes Modell anzeigen
-                    modelsLoaded = true;
-                }
-            );
-        } else {
-            // Modelle bereits geladen: nur Sichtbarkeit aktivieren
-            showModel(modelSelector.value);
-            modelSelector.disabled = false;
-        }
-    } else {
-        // Checkbox deaktiviert: alle Modelle ausblenden
-        Object.values(loadedModels).forEach(m => m.visible = false);
-        currentModelMesh = null;
         modelSelector.disabled = true;
-    }
-});
+        let modelsLoaded = false;
 
-// Dropdown-Wechsel
-modelSelector.addEventListener('change', (e) => {
-    if (modelsLoaded) {
-        showModel(e.target.value);
-    }
-});
+        // enable / disable models
+        toggleModels.addEventListener('change', () => {
+            if (toggleModels.checked) {
+                if (!modelsLoaded) {
+                    loadingSplash.style.display = 'flex';
+                    preloadModelsSequential(this.scene,
+                        (loaded, total) => {
+                            const percent = Math.round((loaded / total) * 100);
+                            progressBar.style.width = percent + '%';
+                        },
+                        () => {
+                            loadingSplash.style.display = 'none';
+                            modelSelector.disabled = false;
+                            showModel(modelSelector.value);
+                            modelsLoaded = true;
+                        }
+                    );
+                } else {
+                    // enable visibility
+                    showModel(modelSelector.value);
+                    modelSelector.disabled = false;
+                }
+            } else {
+                // disable visibility
+                Object.values(loadedModels).forEach(m => m.visible = false);
+                currentModelMesh = null;
+                modelSelector.disabled = true;
+            }
+        });
 
+        // current model
+        modelSelector.addEventListener('change', (e) => {
+            if (modelsLoaded) {
+                showModel(e.target.value);
+            }
+        });
+    },
 
-},
-
-
+    // render scene
     render(gl, args) {
         const m = new THREE.Matrix4().fromArray(args.defaultProjectionData.mainMatrix);
         if (currentModelMesh) {
@@ -357,8 +368,9 @@ modelSelector.addEventListener('change', (e) => {
     }
 };
 
+
 map.on('style.load', () => {
-    // Terrain
+    // ######### load contents #########
     map.addSource('terrain', {
         type: 'raster-dem',
         url: 'https://api.maptiler.com/tiles/terrain-rgb-v2/tiles.json?key=eIzhbDn6LNqL7hhzJdkU',
@@ -367,24 +379,28 @@ map.on('style.load', () => {
     });
     map.setTerrain({ source: 'terrain', exaggeration: 1 });
 
-
-    // Custom Layer für Modelle
-    map.addLayer(customLayer);
-
-    // const orthoCoords = [[8.046,61.559],[8.064,61.559],[8.064,61.552],[8.046,61.552]];
+    //######### load contents #########
+    // orthos
     const orthoCoords = [
-  [8.05114218, 61.55637654], // UL
-  [8.06107026, 61.55644515], // UR
-  [8.06112271, 61.55470864], // LR
-  [8.05119519, 61.55464004]  // LL
-]
+        [8.05114218, 61.55637654], // upper left
+        [8.06107026, 61.55644515], // upper right
+        [8.06112271, 61.55470864], // lower left
+        [8.05119519, 61.55464004]  // lower right
+    ]
     const orthoLayers = [
         { id: 'orthos22', url: 'orthos/Bov_ortho_22.png', coords: orthoCoords },
         { id: 'orthos23', url: 'orthos/Bov_ortho_23.png', coords: orthoCoords },
         { id: 'orthos24', url: 'orthos/Bov_ortho_24.png', coords: orthoCoords },
         { id: 'orthos25', url: 'orthos/Bov_ortho_25.png', coords: orthoCoords }
     ];
-    const heightCoords = [[8.0488781, 61.5604556], [8.0625244, 61.5604556], [8.0625244, 61.5492195], [8.0488781, 61.5492195]];
+
+    // heightmaps
+    const heightCoords = [
+        [8.0488781, 61.5604556], // upper left
+        [8.0625244, 61.5604556], // upper right
+        [8.0625244, 61.5492195], // upper right
+        [8.0488781, 61.5492195]  // upper right
+    ];
     const heightLayers = [
         { id: 'heights2223', url: 'heightmaps/Bov_M3C2_2223_WGS84.png', coords: heightCoords },
         { id: 'heights2324', url: 'heightmaps/Bov_M3C2_2324_WGS84.png', coords: heightCoords },
@@ -394,20 +410,7 @@ map.on('style.load', () => {
         { id: 'heights2225', url: 'heightmaps/Bov_M3C2_2225_WGS84.png', coords: heightCoords }
     ];
 
-    [...orthoLayers, ...heightLayers].forEach(layer => {
-        map.addSource(layer.id, {
-            type: 'image',
-            url: layer.url,
-            coordinates: layer.coords
-        });
-        map.addLayer({
-            id: layer.id,
-            type: 'raster',
-            source: layer.id,
-            layout: { visibility: 'none' } // zunächst ausblenden
-        });
-    });
-
+    // frontlines
     map.addSource('outlines', {
         type: 'geojson',
         data: 'outlines/AllOutlines_WGS84.geojson'
@@ -418,12 +421,192 @@ map.on('style.load', () => {
         data: 'outlines/AllPolygons_WGS84.geojson'
     });
 
+    // POIs
     map.addSource('pois', {
         type: 'geojson',
         data: 'POIs/pois.geojson'
     });
 
-    // Polygon-Füllung (Hover)
+
+    //######### add contents #########
+    // three.js scene
+    map.addLayer(customLayer);
+
+    // raster data
+    [...orthoLayers, ...heightLayers].forEach(layer => {
+        map.addSource(layer.id, {
+            type: 'image',
+            url: layer.url,
+            coordinates: layer.coords
+        });
+        map.addLayer({
+            id: layer.id,
+            type: 'raster',
+            source: layer.id,
+            layout: { visibility: 'none' }
+        });
+    });
+
+        // heightmaps
+        const heightSelector = document.getElementById('heightSelector');
+        const heightLegend = document.getElementById('heightLegend');
+
+        heightSelector.addEventListener('change', (e) => {
+            const selected = e.target.value;
+
+            // set invisible
+            ['heights2223','heights2324','heights2425','heights2224','heights2325','heights2225'].forEach(layer => {
+                map.setLayoutProperty(layer, 'visibility', 'none');
+            });
+
+            // set selected visible
+            if (selected) {
+                map.setLayoutProperty(selected, 'visibility', 'visible');
+                heightLegend.style.display = 'block'; // show legend
+            } else {
+                heightLegend.style.display = 'none';  // remove legend
+            }
+        });
+
+            // measuring mode
+            let measureActive = false;
+            let measurePoints = [];
+            let measureMarkers = [];
+            let measureLine = null;
+
+            const toggleMeasure = document.getElementById('toggleMeasure');
+            const measureTooltip = document.getElementById('measureTooltip');
+
+            let originalMousemoveHandler = null;
+            let originalMouseleaveHandler = null;
+
+            toggleMeasure.addEventListener('click', () => {
+                measureActive = !measureActive;
+                toggleMeasure.classList.toggle('active', measureActive);
+                toggleMeasure.textContent = measureActive ? "QUIT" : "Measure distance";
+
+                if (measureActive) {
+                    disableOtherUI();
+                    measurePoints = [];
+                    removeMeasureLine();
+                    removeMarkers();
+                    measureTooltip.style.display = 'block';
+                    map.getCanvas().style.cursor = 'crosshair';
+
+                    // disable polygonhover
+                    originalMousemoveHandler = map._events?.mousemove?.geojsonFill;
+                    originalMouseleaveHandler = map._events?.mouseleave?.geojsonFill;
+                    map.off('mousemove', 'geojson-fill', handlePolygonHover);
+                    map.off('mouseleave', 'geojson-fill', resetPolygonHover);
+
+                } else {
+                    enableOtherUI();
+                    removeMeasureLine();
+                    removeMarkers();
+                    measurePoints = [];
+                    measureTooltip.style.display = 'none';
+                    map.getCanvas().style.cursor = '';
+
+                    // enable polygo hover
+                    if (originalMousemoveHandler) map.on('mousemove', 'geojson-fill', handlePolygonHover);
+                    if (originalMouseleaveHandler) map.on('mouseleave', 'geojson-fill', resetPolygonHover);
+                }
+            });
+
+            map.on('click', (e) => {
+                if (!measureActive) return;
+
+                const coords = [e.lngLat.lng, e.lngLat.lat];
+                measurePoints.push(coords);
+
+                // set marker
+                const markerEl = document.createElement('div');
+                markerEl.style.width = '6px';
+                markerEl.style.height = '6px';
+                markerEl.style.background = '#ff5500';
+                markerEl.style.borderRadius = '50%';
+                markerEl.style.position = 'absolute';
+                markerEl.style.transform = 'translate(-3px, -3px)'; 
+                const marker = new maplibregl.Marker({ element: markerEl })
+                    .setLngLat(coords)
+                    .addTo(map);
+                measureMarkers.push(marker);
+
+                // set line
+                if (measurePoints.length > 1) {
+                    const geojson = {
+                        type: 'Feature',
+                        geometry: { type: 'LineString', coordinates: measurePoints }
+                    };
+
+                    if (!map.getSource('measure-line')) {
+                        map.addSource('measure-line', { type: 'geojson', data: geojson });
+                        map.addLayer({
+                            id: 'measure-line',
+                            type: 'line',
+                            source: 'measure-line',
+                            paint: {
+                                'line-color': '#ff5500',
+                                'line-width': 2
+                            }
+                        });
+                    } else {
+                        map.getSource('measure-line').setData(geojson);
+                    }
+                }
+
+                // calc dist
+                let totalDistance = 0;
+                for (let i = 1; i < measurePoints.length; i++) {
+                    totalDistance += turf.distance(
+                        turf.point(measurePoints[i - 1]),
+                        turf.point(measurePoints[i]),
+                        { units: 'meters' }
+                    );
+                }
+
+                // show tooltip
+                measureTooltip.style.display = 'block';
+                measureTooltip.innerHTML = `${totalDistance.toFixed(2)} m`;
+                measureTooltip.style.left = e.originalEvent.pageX + 10 + 'px';
+                measureTooltip.style.top = e.originalEvent.pageY + 10 + 'px';
+            });
+        
+            document.addEventListener('keydown', (e) => {
+                if (measureActive && e.key === 'Escape') {
+                    resetMeasurement();
+                }
+            });
+
+        // orthos
+        document.querySelectorAll('.ortho-buttons button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const layerId = btn.dataset.layer;
+
+                const visibility = map.getLayoutProperty(layerId, 'visibility');
+
+                if (visibility === 'visible') {
+                    // hide layer
+                    map.setLayoutProperty(layerId, 'visibility', 'none');
+                    btn.classList.remove('selected');
+                } else {
+                    // show layer
+                    map.setLayoutProperty(layerId, 'visibility', 'visible');
+
+                    document.querySelectorAll('.ortho-buttons button').forEach(b => {
+                        if (b !== btn) {
+                            map.setLayoutProperty(b.dataset.layer, 'visibility', 'none');
+                            b.classList.remove('selected');
+                        }
+                    });
+
+                    btn.classList.add('selected');
+                }
+            });
+        });
+
+
+    // frontlines
     map.addLayer({
         id: 'geojson-fill',
         type: 'fill',
@@ -444,7 +627,6 @@ map.on('style.load', () => {
         }
     });
 
-    // Polygon-Umrisse
     map.addLayer({
         id: 'geojson-line',
         type: 'line',
@@ -461,62 +643,165 @@ map.on('style.load', () => {
         }
     });
 
-    // POIs
-    map.addLayer({
-        id: 'pois-layer',
-        type: 'circle',
-        source: 'pois',
-        paint: {
-        // Kreisgröße abhängig vom Zoom
-        'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            10, 4,   // Zoom 10 → Radius 4px
-            13, 5,   // Zoom 13 → Radius 5px
-            16, 7    // Zoom 16 → Radius 7px
-        ],
-         'circle-color': '#ffffff',
-    }
-    });
+        // hover
+        let hoveredFeatureId = null;
+        map.on('mousemove', 'geojson-fill', (e) => {
+            if (e.features.length > 0) {
+                if (hoveredFeatureId !== null) {
+                    map.setFeatureState(
+                        { source: 'polygons', id: hoveredFeatureId },
+                        { hover: false }
+                    );
+                }
+                hoveredFeatureId = e.features[0].id;
+                map.setFeatureState(
+                    { source: 'polygons', id: hoveredFeatureId },
+                    { hover: true }
+                );
 
-    // Hover-Logik für Polygone
-    let hoveredFeatureId = null;
-    map.on('mousemove', 'geojson-fill', (e) => {
-        if (e.features.length > 0) {
+                const jahr = e.features[0].properties.Year;
+                const tooltip = document.getElementById('tooltip');
+                tooltip.innerHTML = `${jahr}`;
+                tooltip.style.display = 'block';
+                tooltip.style.left = e.originalEvent.pageX + 10 + 'px';
+                tooltip.style.top = e.originalEvent.pageY + 10 + 'px';
+            }
+        });
+
+        map.on('mouseleave', 'geojson-fill', () => {
             if (hoveredFeatureId !== null) {
                 map.setFeatureState(
                     { source: 'polygons', id: hoveredFeatureId },
                     { hover: false }
                 );
             }
-            hoveredFeatureId = e.features[0].id;
-            map.setFeatureState(
-                { source: 'polygons', id: hoveredFeatureId },
-                { hover: true }
-            );
+            hoveredFeatureId = null;
+            document.getElementById('tooltip').style.display = 'none';
+        });
 
-            const jahr = e.features[0].properties.Year;
-            const tooltip = document.getElementById('tooltip');
-            tooltip.innerHTML = `${jahr}`;
-            tooltip.style.display = 'block';
-            tooltip.style.left = e.originalEvent.pageX + 10 + 'px';
-            tooltip.style.top = e.originalEvent.pageY + 10 + 'px';
-        }
+        // toggle checkbox
+        const toggleFrontlines = document.getElementById('toggleFrontlines');
+        toggleFrontlines.checked = true;
+
+        ['geojson-line', 'geojson-fill'].forEach(layerId => {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+        });
+
+        toggleFrontlines.addEventListener('change', (e) => {
+            const visibility = e.target.checked ? 'visible' : 'none';
+            ['geojson-line', 'geojson-fill'].forEach(layerId => {
+                map.setLayoutProperty(layerId, 'visibility', visibility);
+            });
+        });
+
+    // POIs
+    map.addLayer({
+        id: 'pois-layer',
+        type: 'circle',
+        source: 'pois',
+        paint: {
+        'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            10, 4,   // zoom 10 → radius 4px
+            13, 5,   // zoom 13 → radius 5px
+            16, 7    // zoom 16 → radius 7px
+        ],
+         'circle-color': '#ffffff',
+    }
     });
 
-    map.on('mouseleave', 'geojson-fill', () => {
-        if (hoveredFeatureId !== null) {
-            map.setFeatureState(
-                { source: 'polygons', id: hoveredFeatureId },
-                { hover: false }
-            );
-        }
-        hoveredFeatureId = null;
-        document.getElementById('tooltip').style.display = 'none';
+        // POI click
+        map.on('click', 'pois-layer', (e) => {
+            if (e.features.length > 0) {
+                const feature = e.features[0];
+                flyToPOI(feature);
+
+                // get POI-ID
+                const poiId = feature.id ?? feature.properties?.id;
+
+                // get Subtab-Button
+                const targetBtn = document.querySelector(`#tab-tour .subtab-button[data-subtab="poi${poiId}"]`);
+                if (targetBtn) {
+                    document.querySelectorAll('#tab-tour .subtab-button').forEach(b => b.classList.remove('active'));
+                    targetBtn.classList.add('active');
+
+                    // change sidebar content
+                    document.querySelectorAll('#tab-tour .subtab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(`subtab-poi${poiId}`).classList.add('active');
+
+                    document.querySelectorAll('#sidebar .tab-button').forEach(b => b.classList.remove('active'));
+                    document.querySelector('#sidebar .tab-button[data-tab="tour"]').classList.add('active');
+                    document.querySelectorAll('#sidebar .tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById('tab-tour').classList.add('active');
+                }
+            }
+        });
+
+        // hover
+        map.on('mouseenter', 'pois-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'pois-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        
+    // Modes
+    document.querySelectorAll('#sidebar .tab-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#sidebar .tab-button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // contents
+            document.querySelectorAll('#sidebar .tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
     });
 
-    // POI-Klick
+    document.querySelectorAll('#sidebar .subtabs').forEach(subtabGroup => {
+        const buttons = subtabGroup.querySelectorAll('.subtab-button');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+            // Buttons innerhalb dieser Gruppe
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Inhalte innerhalb dieses Parent-Tabs
+            const parent = subtabGroup.parentElement;
+            parent.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
+            parent.querySelector('#subtab-' + btn.dataset.subtab).classList.add('active');
+            });
+        });
+    });
+
+        // Tour-Mode
+        document.querySelectorAll('#tab-tour .subtab-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const poiId = btn.dataset.subtab.replace('poi',''); 
+                // get clicked poi
+                const features = map.querySourceFeatures('pois');
+                const unique = {};
+                features.forEach(f => {
+                    const id = f.id ?? f.properties?.id;
+                    if (!unique[id]) {
+                        unique[id] = f;
+                    }
+                });
+
+                const match = unique[poiId];
+
+                if (match) {
+                    flyToPOI(match);
+                } else {
+                    console.error(`POI mit ID ${poiId} nicht gefunden.`);
+                    console.log("Unique IDs:", Object.keys(unique));
+                }
+            });
+        });
+
+
+    // functions
     function flyToPOI(feature) {
         const coords = feature.geometry.coordinates;
         const zoom = feature.properties.zoom || 13;
@@ -533,338 +818,37 @@ map.on('style.load', () => {
         });
     }
 
-    function handlePoiClick(feature) {
-        // alles, was beim Klick auf POI passieren soll
-        flyToPOI(feature);
-
-        // Beispiel: Tooltip anzeigen oder weitere Aktionen
-        console.log("POI geklickt:", feature);
-        }
-
-    map.on('click', 'pois-layer', (e) => {
-        if (e.features.length > 0) {
-        const feature = e.features[0];
-        handlePoiClick(feature);
-
-        // POI-ID ermitteln
-        const poiId = feature.id ?? feature.properties?.id;
-
-        // Entsprechenden Subtab-Button auswählen
-        const targetBtn = document.querySelector(`#tab-tour .subtab-button[data-subtab="poi${poiId}"]`);
-        if (targetBtn) {
-            // alle Tour-Buttons zurücksetzen
-            document.querySelectorAll('#tab-tour .subtab-button').forEach(b => b.classList.remove('active'));
-            // diesen aktivieren
-            targetBtn.classList.add('active');
-
-            // alle Inhalte ausblenden
-            document.querySelectorAll('#tab-tour .subtab-content').forEach(c => c.classList.remove('active'));
-            // zugehörigen Inhalt einblenden
-            document.getElementById(`subtab-poi${poiId}`).classList.add('active');
-
-            // sicherstellen, dass auch das Tour-Tab aktiv ist
-            document.querySelectorAll('#sidebar .tab-button').forEach(b => b.classList.remove('active'));
-            document.querySelector('#sidebar .tab-button[data-tab="tour"]').classList.add('active');
-            document.querySelectorAll('#sidebar .tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('tab-tour').classList.add('active');
-        }
+    function disableOtherUI() {
+        document.querySelectorAll('#sidebar button, #sidebar select, #sidebar input[type=checkbox]').forEach(el => {
+            if (el !== toggleMeasure) el.disabled = true;
+        });
     }
-    });
 
-    // Mauszeiger ändern über POIs
-    map.on('mouseenter', 'pois-layer', () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-    map.on('mouseleave', 'pois-layer', () => {
-        map.getCanvas().style.cursor = '';
-    });
+    function enableOtherUI() {
+        document.querySelectorAll('#sidebar button, #sidebar select, #sidebar input[type=checkbox]').forEach(el => {
+            el.disabled = false;
+        });
+    }
 
+    function removeMeasureLine() {
+        if (map.getLayer('measure-line')) map.removeLayer('measure-line');
+        if (map.getSource('measure-line')) map.removeSource('measure-line');
+        measureLine = null;
+    }
 
-    //Messmodus
-    
-let measureActive = false;
-let measurePoints = [];
-let measureMarkers = [];
-let measureLine = null;
+    function removeMarkers() {
+        measureMarkers.forEach(m => m.remove());
+        measureMarkers = [];
+    }
 
-const toggleMeasure = document.getElementById('toggleMeasure');
-const measureTooltip = document.getElementById('measureTooltip');
-
-let originalMousemoveHandler = null;
-let originalMouseleaveHandler = null;
-
-toggleMeasure.addEventListener('click', () => {
-    measureActive = !measureActive;
-    toggleMeasure.classList.toggle('active', measureActive);
-    // toggleMeasure.textContent = measureActive ? "Messmodus beenden" : "Messmodus aktivieren";
-
-    if (measureActive) {
-        disableOtherUI();
+    function resetMeasurement() {
         measurePoints = [];
         removeMeasureLine();
         removeMarkers();
-        measureTooltip.style.display = 'block';
-        map.getCanvas().style.cursor = 'crosshair';
-
-        // Polygon-Hover deaktivieren
-        originalMousemoveHandler = map._events?.mousemove?.geojsonFill;
-        originalMouseleaveHandler = map._events?.mouseleave?.geojsonFill;
-        map.off('mousemove', 'geojson-fill', handlePolygonHover);
-        map.off('mouseleave', 'geojson-fill', resetPolygonHover);
-
-    } else {
-        enableOtherUI();
-        removeMeasureLine();
-        removeMarkers();
-        measurePoints = [];
         measureTooltip.style.display = 'none';
-        map.getCanvas().style.cursor = '';
-
-        // Polygon-Hover wieder aktivieren
-        if (originalMousemoveHandler) map.on('mousemove', 'geojson-fill', handlePolygonHover);
-        if (originalMouseleaveHandler) map.on('mouseleave', 'geojson-fill', resetPolygonHover);
-    }
-});
-
-
-function disableOtherUI() {
-    document.querySelectorAll('#sidebar button, #sidebar select, #sidebar input[type=checkbox]').forEach(el => {
-        if (el !== toggleMeasure) el.disabled = true;
-    });
-}
-
-function enableOtherUI() {
-    document.querySelectorAll('#sidebar button, #sidebar select, #sidebar input[type=checkbox]').forEach(el => {
-        el.disabled = false;
-    });
-}
-function removeMeasureLine() {
-    if (map.getLayer('measure-line')) map.removeLayer('measure-line');
-    if (map.getSource('measure-line')) map.removeSource('measure-line');
-    measureLine = null;
-}
-
-function removeMarkers() {
-    measureMarkers.forEach(m => m.remove());
-    measureMarkers = [];
-}
-
-function resetMeasurement() {
-    // Messpunkte löschen
-    measurePoints = [];
-    
-    // Linie entfernen
-    removeMeasureLine();
-    
-    // Marker entfernen
-    removeMarkers();
-    
-    // Tooltip ausblenden
-    measureTooltip.style.display = 'none';
-}
-
-// Karte klicken, um Punkte zu setzen
-map.on('click', (e) => {
-    if (!measureActive) return;
-
-    const coords = [e.lngLat.lng, e.lngLat.lat];
-    measurePoints.push(coords);
-
-    // Kreuz setzen
-    const markerEl = document.createElement('div');
-    markerEl.style.width = '6px';
-    markerEl.style.height = '6px';
-    markerEl.style.background = '#ff5500';
-    markerEl.style.borderRadius = '50%';
-    markerEl.style.position = 'absolute';
-    markerEl.style.transform = 'translate(-3px, -3px)'; 
-    const marker = new maplibregl.Marker({ element: markerEl })
-        .setLngLat(coords)
-        .addTo(map);
-    measureMarkers.push(marker);
-
-    // Linie aktualisieren
-    if (measurePoints.length > 1) {
-        const geojson = {
-            type: 'Feature',
-            geometry: { type: 'LineString', coordinates: measurePoints }
-        };
-
-        if (!map.getSource('measure-line')) {
-            map.addSource('measure-line', { type: 'geojson', data: geojson });
-            map.addLayer({
-                id: 'measure-line',
-                type: 'line',
-                source: 'measure-line',
-                paint: {
-                    'line-color': '#ff5500',
-                    'line-width': 2
-                }
-            });
-        } else {
-            map.getSource('measure-line').setData(geojson);
-        }
     }
 
-    // Distanz berechnen
-    let totalDistance = 0;
-    for (let i = 1; i < measurePoints.length; i++) {
-        totalDistance += turf.distance(
-            turf.point(measurePoints[i - 1]),
-            turf.point(measurePoints[i]),
-            { units: 'meters' }
-        );
-    }
-
-    // Tooltip anzeigen
-    measureTooltip.style.display = 'block';
-    measureTooltip.innerHTML = `${totalDistance.toFixed(2)} m`;
-    measureTooltip.style.left = e.originalEvent.pageX + 10 + 'px';
-    measureTooltip.style.top = e.originalEvent.pageY + 10 + 'px';
-});
-
-document.addEventListener('keydown', (e) => {
-    if (measureActive && e.key === 'Escape') {
-        resetMeasurement();
-    }
-});
-
-   // Tour-Subtabs steuern die POIs
-document.querySelectorAll('#tab-tour .subtab-button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const poiId = btn.dataset.subtab.replace('poi',''); // "poi3" -> "3"
-
-        // Alle Features holen
-        const features = map.querySourceFeatures('pois');
-
-        // Deduplizieren nach ID
-        const unique = {};
-        features.forEach(f => {
-            const id = f.id ?? f.properties?.id;
-            if (!unique[id]) {
-                unique[id] = f;
-            }
-        });
-
-        const match = unique[poiId];
-
-        if (match) {
-            handlePoiClick(match); // exakt wie POI-Klick
-        } else {
-            console.error(`POI mit ID ${poiId} nicht gefunden.`);
-            console.log("Unique IDs:", Object.keys(unique));
-        }
-    });
-});
-
-
-// Haupttab-Logik
-document.querySelectorAll('#sidebar .tab-button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    // Haupttabs schalten
-    document.querySelectorAll('#sidebar .tab-button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    // Inhalte schalten
-    document.querySelectorAll('#sidebar .tab-content').forEach(tab => tab.classList.remove('active'));
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
-
-// Subtab-Logik (delegiert, für Explore und Tour gleich)
-document.querySelectorAll('#sidebar .subtabs').forEach(subtabGroup => {
-  const buttons = subtabGroup.querySelectorAll('.subtab-button');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Buttons innerhalb dieser Gruppe
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Inhalte innerhalb dieses Parent-Tabs
-      const parent = subtabGroup.parentElement;
-      parent.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
-      parent.querySelector('#subtab-' + btn.dataset.subtab).classList.add('active');
-    });
-  });
-});
-
-// Ortho-Layer Auswahl Buttons
-document.querySelectorAll('.ortho-buttons button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const layerId = btn.dataset.layer;
-
-        // Aktuelle Sichtbarkeit prüfen
-        const visibility = map.getLayoutProperty(layerId, 'visibility');
-
-        if (visibility === 'visible') {
-            // Layer ausblenden
-            map.setLayoutProperty(layerId, 'visibility', 'none');
-            btn.classList.remove('selected');
-        } else {
-            // Layer einblenden
-            map.setLayoutProperty(layerId, 'visibility', 'visible');
-
-            // Andere Ortho-Buttons ausblenden
-            document.querySelectorAll('.ortho-buttons button').forEach(b => {
-                if (b !== btn) {
-                    map.setLayoutProperty(b.dataset.layer, 'visibility', 'none');
-                    b.classList.remove('selected');
-                }
-            });
-
-            // Button markieren
-            btn.classList.add('selected');
-        }
-    });
-});
-
-const toggleFrontlines = document.getElementById('toggleFrontlines');
-
-    // Standardmäßig aktiv
-    toggleFrontlines.checked = true;
-    ['geojson-line', 'geojson-fill'].forEach(layerId => {
-        map.setLayoutProperty(layerId, 'visibility', 'visible');
-    });
-
-    // Event: Checkbox toggeln
-    toggleFrontlines.addEventListener('change', (e) => {
-        const visibility = e.target.checked ? 'visible' : 'none';
-        ['geojson-line', 'geojson-fill'].forEach(layerId => {
-            map.setLayoutProperty(layerId, 'visibility', visibility);
-        });
-    });
-
-const heightSelector = document.getElementById('heightSelector');
-
-const heightLegend = document.getElementById('heightLegend');
-
-heightSelector.addEventListener('change', (e) => {
-    const selected = e.target.value;
-
-    // Alle Height-Layer ausblenden
-    ['heights2223','heights2324','heights2425','heights2224','heights2325','heights2225'].forEach(layer => {
-        map.setLayoutProperty(layer, 'visibility', 'none');
-    });
-
-    // ausgewählten Layer einblenden
-    if (selected) {
-        map.setLayoutProperty(selected, 'visibility', 'visible');
-        heightLegend.style.display = 'block'; // Legende einblenden
-    } else {
-        heightLegend.style.display = 'none';  // Legende ausblenden
-    }
-});
-
-
-});
+});    
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
