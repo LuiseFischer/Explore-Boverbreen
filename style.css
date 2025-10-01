@@ -152,7 +152,7 @@ display: none;
 #heightLegend {
     position: absolute;     
     right: 1%;   
-    top: 10%;
+    top: 30px;
     height: 30%;
     width: auto;
     display: none;
