@@ -6,9 +6,9 @@ Explore-Boverbreen is a functional prototype and is intended
 to give an idea of the developed concept of the application.
 
 # Usage note
-Some functions have already been implemented, but not all of them.  
+Many functions have already been implemented, but not all of them.  
 In particular, the automatic showing and hiding of layers is not yet consistent.  
-It is recommended to manually switch off 3D models for the 2D view and tour mode.
+It is recommended to manually switch off 3D models for the 2D view and tour-mode.
 
    
 # folder structure  
