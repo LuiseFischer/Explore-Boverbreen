@@ -185,7 +185,7 @@ import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
 
 const map = new maplibregl.Map({
     container: 'map',
-    style: 'https://api.maptiler.com/maps/satellite/style.json?key=pUc7eGHl5LbNsDJwwLwV', //01999470-6312-7d71-bbb7-168732bad29b
+    style: 'https://api.maptiler.com/maps/satellite/style.json?key=pUc7eGHl5LbNsDJwwLwV', 
     zoom: 13,
     minZoom: 11,
     maxZoom: 17,
@@ -374,7 +374,7 @@ map.on('style.load', () => {
     // ######### load contents #########
     map.addSource('terrain', {
         type: 'raster-dem',
-        url: 'https://api.maptiler.com/tiles/terrain-rgb-v2/tiles.json?key=eIzhbDn6LNqL7hhzJdkU',
+        url: 'https://api.maptiler.com/tiles/terrain-rgb-v2/tiles.json?key=pUc7eGHl5LbNsDJwwLwVx',
         tileSize: 256,
         maxzoom: 14
     });
