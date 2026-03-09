@@ -238,4 +238,49 @@ display: none;
     border-radius: 12px 12px 0 0;
   }
 
+#heightLegend {
+    position: absolute;     
+    left: 1%;   
+    top: 30px;
+    height: 30%;
+    width: auto;
+    display: none;
+}
+
+#appendix {
+    position: absolute;
+    right: 0;
+    top: 17%;          
+    width: 50px; /* 280*/
+    height: 20px;
+    background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
+    z-index: 10;
+    padding: 10px;
+    font-family: sans-serif;
+    overflow-y: auto;
+}
+
+#download {
+    position: absolute;
+    right: 0;
+    top: calc(17% - 40px);          
+    width: 50px; /* 280*/
+    height: 25px;
+    background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
+    z-index: 10;
+    padding: 10px;
+    font-family: sans-serif;
+    overflow-y: auto;
+}
+
+.soon-button {
+    background: rgb(200, 200, 200);
+    color: rgb(149, 149, 149);
+    padding: 2px 8px;
+    width: 48%;
+    min-width: 40px;
+    border: none;
+    font-size: 0.9em;
+}
+
 }
