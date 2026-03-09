@@ -30,7 +30,7 @@ html, body {
     transform: translateY(-50%);
     width: 23%; /* 280*/
     height: 90%;
-    background: rgba(255,25,255,0.7); /* weiß, leicht transparent */
+    background: rgba(255,255,255,0.7); /* weiß, leicht transparent */
     z-index: 10;
     padding: 10px;
     font-family: sans-serif;
@@ -263,7 +263,7 @@ display: none;
 #download {
     position: absolute;
     right: 0;
-    top: calc(17% - 40px);          
+    top: calc(17% - 50px);          
     width: 50px; /* 280*/
     height: 25px;
     background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
@@ -274,8 +274,8 @@ display: none;
 }
 
 .soon-button {
-    background: rgb(200, 200, 200);
-    color: rgb(149, 149, 149);
+    background: none;
+    color: rgb(200, 200, 200);
     padding: 2px 8px;
     width: 48%;
     min-width: 40px;
