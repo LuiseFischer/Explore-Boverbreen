@@ -30,7 +30,7 @@ html, body {
     transform: translateY(-50%);
     width: 23%; /* 280*/
     height: 90%;
-    background: rgba(0,0,0,0.7); /* weiß, leicht transparent */
+    background: rgba(255,255,255,0.7); /* weiß, leicht transparent */
     z-index: 10;
     padding: 10px;
     font-family: sans-serif;
@@ -230,12 +230,12 @@ display: none;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 99%;
+    width: 90%;
     height: 40%;
     top: auto;
     transform: none;
     border-radius: 12px 12px 0 0;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
   }
 
 #heightLegend {
@@ -253,7 +253,7 @@ display: none;
     top: 17%;          
     width: 50px; /* 280*/
     height: 23px;
-    background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
+    background: rgba(255,255,255,0.6); /* weiß, leicht transparent */
     z-index: 10;
     padding: 10px;
     font-family: sans-serif;
@@ -266,13 +266,24 @@ display: none;
     top: calc(17% - 50px);          
     width: 50px; /* 280*/
     height: 23px;
-    background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
+    background: rgba(255,255,255,0.6); /* weiß, leicht transparent */
     z-index: 10;
     padding: 10px;
     font-family: sans-serif;
     overflow-y: auto;
 }
-   
+
+.ortho-buttons button {
+    flex: 1 1 auto;
+    margin: 2px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border: none;
+    background: rgba(0,0,0, 0.3);
+    color: black;
+    transition: all 0.2s;
+}
+
 .soon-button {
     background: none;
     color: rgb(149, 149, 149);
