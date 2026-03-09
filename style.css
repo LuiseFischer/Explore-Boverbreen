@@ -251,7 +251,7 @@ display: none;
     position: absolute;
     right: 0;
     top: 17%;          
-    width: 50px; /* 280*/
+    width: 60px; /* 280*/
     height: 20px;
     background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
     z-index: 10;
@@ -264,23 +264,13 @@ display: none;
     position: absolute;
     right: 0;
     top: calc(17% - 50px);          
-    width: 50px; /* 280*/
+    width: 60px; /* 280*/
     height: 25px;
     background: rgba(255,255,255,0.8); /* weiß, leicht transparent */
     z-index: 10;
     padding: 10px;
     font-family: sans-serif;
     overflow-y: auto;
-}
-
-.soon-button {
-    background: none;
-    color: rgb(200, 200, 200);
-    padding: 2px 8px;
-    width: 48%;
-    min-width: 40px;
-    border: none;
-    font-size: 0.9em;
 }
 
 }
