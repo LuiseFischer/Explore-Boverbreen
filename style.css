@@ -271,5 +271,15 @@ display: none;
     font-family: sans-serif;
     overflow-y: auto;
 }
-
+   
+.soon-button {
+    background: none;
+    color: rgb(149, 149, 149);
+    padding: 2px 8px;
+    width: 48%;
+    min-width: 40px;
+    border: none;
+    font-size: 0.9em;
+}
+   
 }
