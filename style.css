@@ -95,7 +95,6 @@ html, body {
 ------------------------ */
 button {
     cursor: pointer;
-    min-height: 40px;
 }
 
 #loadingSplash {
