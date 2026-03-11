@@ -227,9 +227,9 @@ display: none;
 
   #sidebar {
     position: absolute;
-    left:  2.5%;
+    left:  0;
+    right: 0;
     bottom: 0;
-    width: 95%;
     height: 40%;
     top: auto;
     transform: none;
